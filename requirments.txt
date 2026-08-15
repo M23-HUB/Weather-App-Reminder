@@ -1,2 +1,1 @@
-requests
-smtplib
+requests==2.31.0
