@@ -4,9 +4,6 @@ import smtplib as sm
 
 MY_LAT = 50.075539
 MY_LNG = 14.437800
-MY_EMAIL = "mi.mensah23@gmail.com"
-PASSWORD = "rwcm uqom bcdf woky"
-APPID = "415cbfecd3487636a8b31e49482a2f35"
 
 param = {
   "lat": MY_LAT,
