@@ -1,8 +1,12 @@
+import os
 import requests
 import smtplib as sm
 
 MY_LAT = 50.075539
 MY_LNG = 14.437800
+MY_EMAIL = os.environ.get("MY_EMAIL")
+PASSWORD = os.environ.get("PASSWORD")
+APPID = os.environ.get("APPIS")
 
 param = {
   "lat": MY_LAT,
