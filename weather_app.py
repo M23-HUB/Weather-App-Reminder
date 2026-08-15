@@ -8,7 +8,7 @@ MY_LNG = 14.437800
 param = {
   "lat": MY_LAT,
   "lon": MY_LNG,
-  "cnt": 5,
+  "cnt": 5, # Number of intervals returned
   "appid": APPID
 }
 
