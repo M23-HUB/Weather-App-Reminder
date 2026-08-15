@@ -5,7 +5,7 @@ If you want to use the code you will need to replace a few things.
 
 **Replace the MY_EMAIL with your email. 
 
-**PASSWORD is not your actusl password but one provided in your email security
+**PASSWORD is not your actual password but a Passkey provided in your email security section.
 
 **For an APPID you will need to create an account at https://openweathermap.org where a unique appid will be created FOR YOU.
 
