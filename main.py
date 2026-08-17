@@ -6,7 +6,7 @@ MY_LAT = 50.075539
 MY_LNG = 14.437800
 MY_EMAIL = os.environ.get("MY_EMAIL")
 PASSWORD = os.environ.get("PASSWORD")
-APPID = os.environ.get("APPIS")
+APPID = os.environ.get("APPID")
 
 param = {
   "lat": MY_LAT,
