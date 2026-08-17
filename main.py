@@ -61,23 +61,103 @@ for key, value in weather_conditions.items():
 
 if active_conditions:
     
-    # Mail body using HTML
-    
-    with open('body.html', 'r', encoding='utf-8') as file:
-        html_template = file.read()
-    
-    alert_count = len(active_conditions)
-    alert_items = ''.join(
-        f'<div class="alert-item"> {condition}</div>' 
-        for condition in active_conditions
-    )    
-    current_time = datetime.now().strftime('%H:%M')
-
-    html_body = html_template.format(
-        alert_count=alert_count,
-        alert_items=alert_items,
-        current_time=current_time
-    ) 
+    html_body = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                padding: 20px;
+            }}
+            .container {{
+                max-width: 600px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 10px;
+                padding: 30px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }}
+            .header {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                border-radius: 10px 10px 0 0;
+                margin: -30px -30px 20px -30px;
+                text-align: center;
+            }}
+            .header h1 {{
+                margin: 0;
+                font-size: 24px;
+            }}
+            .weather-icon {{
+                font-size: 48px;
+            }}
+            .alert-item {{
+                background: #fff3cd;
+                border-left: 4px solid #ffc107;
+                padding: 12px 16px;
+                margin: 10px 0;
+                border-radius: 4px;
+                font-size: 16px;
+            }}
+            .alert-item strong {{
+                color: #856404;
+            }}
+            .footer {{
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid #e0e0e0;
+                text-align: center;
+                color: #666;
+                font-size: 12px;
+            }}
+            .badge {{
+                display: inline-block;
+                background: #dc3545;
+                color: white;
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: bold;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="weather-icon">🌧️</div>
+                <h1>⚠️ Weather Alert</h1>
+                <p style="margin: 5px 0 0 0; opacity: 0.9;">
+                    Weather conditions for the next few hours
+                </p>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <p style="font-size: 14px; color: #666;">
+                    <strong>📅 Date:</strong> {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
+                </p>
+            </div>
+            
+            <h3 style="color: #333;">⚠️ Active Weather Alerts</h3>
+            
+            {''.join(f'<div class="alert-item">🌧️ <strong>{condition}</strong></div>' for condition in active_conditions)}
+            
+            <div style="background: #e7f3ff; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0; color: #004085;">
+                    <strong>💡 Tip:</strong> Consider carrying an umbrella and dressing appropriately for the weather conditions.
+                </p>
+            </div>
+            
+            <div class="footer">
+                <p>Stay safe! ☔</p>
+                <p>This is an automated weather alert from Weather App</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """ 
     
     msg = EmailMessage()
     msg['Subject'] = "Weather Alert - Action Required"
