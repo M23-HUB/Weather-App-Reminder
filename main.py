@@ -1,6 +1,8 @@
 import os
 import requests
 import smtplib as sm
+from email.message import EmailMessage
+import datetime
 
 MY_LAT = 50.075539
 MY_LNG = 14.437800
@@ -49,6 +51,7 @@ for hour_data in data["list"]:
         weather_conditions['thunder']['count'] += 1
 
 # Collect active conditions with counts
+
 active_conditions = []
 for key, value in weather_conditions.items():
     if value['active']:
@@ -57,14 +60,43 @@ for key, value in weather_conditions.items():
 #  Send Email
 
 if active_conditions:
-  email_body = "Weather Alert for the next few hours:\n\n"
-  email_body += "\n".join(f"• {condition}" for condition in active_conditions)
-  
-  with sm.SMTP("smtp.gmail.com") as connection:
-      connection.starttls()
-      connection.login(user= MY_EMAIL, password=PASSWORD)
-      connection.sendmail(
-        from_addr=MY_EMAIL,
-        to_addrs=MY_EMAIL,
-        msg=f"Subject: Weather Alert\n\n{email_body}".encode("utf-8")
-      )
+    
+    # Mail body using HTML
+    
+    with open('body.html', 'r', encoding='utf-8') as file:
+        html_template = file.read()
+    
+    alert_count = len(active_conditions)
+    alert_items = ''.join(
+        f'<div class="alert-item"> {condition}</div>' 
+        for condition in active_conditions
+    )    
+    current_time = datetime.now().strftime('%H:%M')
+
+    html_body = html_template.format(
+        alert_count=alert_count,
+        alert_items=alert_items,
+        current_time=current_time
+    ) 
+    
+    msg = EmailMessage()
+    msg['Subject'] = "Weather Alert - Action Required"
+    msg['From'] = MY_EMAIL
+    msg['To'] = MY_EMAIL
+    
+    # Plain text version (for email clients that don't support HTML)
+    
+    plain_text = "Weather Alert for the next few hours:\n\n"
+    plain_text += "\n".join(f"• {condition}" for condition in active_conditions)
+    msg.set_content(plain_text)
+    
+    # HTML version
+    
+    msg.add_alternative(html_body, subtype='html')
+    
+    # Send the email
+    
+    with sm.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()
+        connection.login(user=MY_EMAIL, password=PASSWORD)
+        connection.send_message(msg)
