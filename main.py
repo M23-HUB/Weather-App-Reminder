@@ -66,5 +66,5 @@ if active_conditions:
       connection.sendmail(
         from_addr=MY_EMAIL,
         to_addrs=MY_EMAIL,
-        msg=f"Subject: Weather Alert\n\n{email_body}"
+        msg=f"Subject: Weather Alert\n\n{email_body}".encode("utf-8")
       )
