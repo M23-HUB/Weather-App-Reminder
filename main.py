@@ -2,7 +2,7 @@ import os
 import requests
 import smtplib as sm
 from email.message import EmailMessage
-import datetime
+from datetime import datetime
 
 MY_LAT = 50.075539
 MY_LNG = 14.437800
