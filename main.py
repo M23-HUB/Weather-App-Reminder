@@ -77,7 +77,7 @@ for data in data["list"]:
     if weather_now in weather_conditions:
         weather_conditions[weather_now]['active'] = True
         weather_conditions[weather_now]['count'] += 1
-        time = data['list']['dt_txt'].split("")[1][:-3]
+        time = data['dt_txt'].split("")[1][:-3]
         time_report.append(time)
 
 active_conditions = []
