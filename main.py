@@ -73,7 +73,7 @@ weather_conditions = {
 
 time_report = []
 for data in data["list"]:
-    weather_now = data["weather"][0]["main"].low()    
+    weather_now = data["weather"][0]["main"].lower ()    
     if weather_now in weather_conditions:
         weather_conditions[weather_now]['active'] = True
         weather_conditions[weather_now]['count'] += 1
