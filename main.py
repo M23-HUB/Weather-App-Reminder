@@ -11,6 +11,7 @@ MY_LNG = 14.437800
 MY_EMAIL = os.environ.get("MY_EMAIL")
 PASSWORD = os.environ.get("PASSWORD")
 APPID = os.environ.get("APPID")
+image_dir = os.path.join('../Weather-App-Reminder/images/', 'images')
 
 #---------Functions---------#
 
@@ -115,15 +116,15 @@ max_temp = round(int(max([i['main']['temp'] for i in forecast['list']])), 0)
 #------Weather Conditions-----#
 
 weather_conditions = {
-    'Clear':{'clear sky':{'active': False, 'label':('../images/01d.png')}},
-    'Clouds':{'few clouds': {'active': False, 'label':('../images/02d.png')},
-              'scattered clouds': {'active': False, 'label':('../images/03d.png')}, 
-              'broken clouds': {'active': False, 'label':('../images/04d.png')}}, 
-    'Drizzle':{'drizzle':{'active': False, 'label':('../images/09d.png')}}, 
-    'Rain':{'rain':{'active': False, 'label':('../images/10d.png')}}, 
-    'Thunderstorm':{'thunderstorm':{'active': False, 'label':('../images/11d.png')}}, 
-    'Snow':{'snow':{'active': False, 'label':('../images/13d.png')}}, 
-    'Atmosphere': {'atmosphere':{'active': False, 'label':('../images/50d.png')}}, 
+    'Clear':{'clear sky':{'active': False, 'label':(f'{image_dir}01d.png')}},
+    'Clouds':{'few clouds': {'active': False, 'label':(f'{image_dir}02d.png')},
+              'scattered clouds': {'active': False, 'label':(f'{image_dir}03d.png')}, 
+              'broken clouds': {'active': False, 'label':(f'{image_dir}04d.png')}}, 
+    'Drizzle':{'drizzle':{'active': False, 'label':(f'{image_dir}09d.png')}}, 
+    'Rain':{'rain':{'active': False, 'label':(f'{image_dir}10d.png')}}, 
+    'Thunderstorm':{'thunderstorm':{'active': False, 'label':(f'{image_dir}11d.png')}}, 
+    'Snow':{'snow':{'active': False, 'label':(f'{image_dir}13d.png')}}, 
+    'Atmosphere': {'atmosphere':{'active': False, 'label':(f'{image_dir}50d.png')}}, 
 }
 
 #------Active Weather Conditions-----#
