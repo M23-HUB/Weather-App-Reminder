@@ -115,15 +115,15 @@ max_temp = round(int(max([i['main']['temp'] for i in forecast['list']])), 0)
 #------Weather Conditions-----#
 
 weather_conditions = {
-    'Clear':{'clear sky':{'active': False, 'label':'../Weather-App-Reminder/images/01d.png'}},
-    'Clouds':{'few clouds': {'active': False, 'label':'../Weather-App-Reminder/images/02d.png'},
-              'scattered clouds': {'active': False, 'label':'../Weather-App-Reminder/images/03d.png'}, 
-              'broken clouds': {'active': False, 'label':'../Weather-App-Reminder/images/04d.png'}}, 
-    'Drizzle':{'drizzle':{'active': False, 'label':'../Weather-App-Reminder/images/09d.png'}}, 
-    'Rain':{'rain':{'active': False, 'label':'../Weather-App-Reminder/images/10d.png'}}, 
-    'Thunderstorm':{'thunderstorm':{'active': False, 'label':'../Weather-App-Reminder/images/11d.png'}}, 
-    'Snow':{'snow':{'active': False, 'label':'../Weather-App-Reminder/images/13d.png'}}, 
-    'Atmosphere': {'atmosphere':{'active': False, 'label':'../Weather-App-Reminder/images/50d.png'}}, 
+    'Clear':{'clear sky':{'active': False, 'label':('../images/01d.png')}},
+    'Clouds':{'few clouds': {'active': False, 'label':('../images/02d.png')},
+              'scattered clouds': {'active': False, 'label':('../images/03d.png')}, 
+              'broken clouds': {'active': False, 'label':('../images/04d.png')}}, 
+    'Drizzle':{'drizzle':{'active': False, 'label':('../images/09d.png')}}, 
+    'Rain':{'rain':{'active': False, 'label':('../images/10d.png')}}, 
+    'Thunderstorm':{'thunderstorm':{'active': False, 'label':('../images/11d.png')}}, 
+    'Snow':{'snow':{'active': False, 'label':('../images/13d.png')}}, 
+    'Atmosphere': {'atmosphere':{'active': False, 'label':('../images/50d.png')}}, 
 }
 
 #------Active Weather Conditions-----#
