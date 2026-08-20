@@ -11,7 +11,7 @@ MY_LNG = 14.437800
 MY_EMAIL = os.environ.get("MY_EMAIL")
 PASSWORD = os.environ.get("PASSWORD")
 APPID = os.environ.get("APPID")
-image_dir = os.path.join('../Weather-App-Reminder/images/', 'images')
+image_dir = os.path.join('../Weather-App-Reminder/', 'images/')
 
 #---------Functions---------#
 
