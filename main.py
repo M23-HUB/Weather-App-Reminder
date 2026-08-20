@@ -142,7 +142,7 @@ for key, value in weather_conditions.items():
 
 if active:
     
-    alert_items = ''.join(f"<strong>The forecast is {condition}.<br>Feels like {feel_like}<br>Minimun Temperature: {min_temp}<br>Maximun Temperature: {max_temp}</strong><br>" for condition in active)
+    alert_items = ''.join(f"<strong>The forecast is {condition}.</strong><br>Feels like {feel_like}<br>Minimun Temperature: {min_temp}<br>Maximun Temperature: {max_temp}<br>" for condition in active)
     weather_icon = [active["label"]]
                   
     html_body = f"""
