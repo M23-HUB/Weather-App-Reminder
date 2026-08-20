@@ -49,8 +49,8 @@ def greetings():
         return "Good Afternoon"
     elif 18 <= time_now.hour:
         if time_now.hour > sunset_hour:
-            weather_conditions['Clear']['label'] = '../Weather-App-Reminder/images/01n.png' 
-            weather_conditions['Clouds']['few clouds']['label'] = '../Weather-App-Reminder/images/02n.png' 
+            weather_conditions['Clear']['label'] = './Weather-App-Reminder/images/01n.png' 
+            weather_conditions['Clouds']['few clouds']['label'] = './Weather-App-Reminder/images/02n.png' 
         return "Good Evening"
      
 def tips():
