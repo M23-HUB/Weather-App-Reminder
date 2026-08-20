@@ -107,23 +107,23 @@ data = response.json()
 time_now = datetime.now()
 sunset = data['results']['sunset']
 sunset_hour = int(sunset.split("T")[1].split(':')[0])
-temp = round(int(weather_now['main']['temp'],0))
-feel_like = round(int(weather_now['main']['feels_like'],0))
-min_temp = round(int(weather_now['main']['temp_min'],0))
-max_temp = round(int(weather_now['main']['temp_max'],0))
+temp = round(int(weather_now['main']['temp']),0)
+feel_like = round(int(weather_now['main']['feels_like']),0)
+min_temp = round(int(weather_now['main']['temp_min']),0)
+max_temp = round(int(max([i['main']['temp'] for i in forecast['list']])), 0)
 
 #------Weather Conditions-----#
 
 weather_conditions = {
-    'Clear':{'active': False, 'label':'../Weather-App-Reminder/images/01d.png'},
-    'Clouds':{'few clouds': {'active': False, 'label':'../Weather-App-Reminder/images/02d.png'},
-              'scattered clouds': {'active': False, 'label':'../Weather-App-Reminder/images/03d.png'}, 
-              'broken clouds': {'active': False, 'label':'../Weather-App-Reminder/images/04d.png'}}, 
-    'Drizzle':{'active': False, 'label':'../Weather-App-Reminder/images/09d.png'}, 
-    'Rain':{'active': False, 'label':'../Weather-App-Reminder/images/10d.png'}, 
-    'Thunderstorm':{'active': False, 'label':'../Weather-App-Reminder/images/11d.png'}, 
-    'Snow':{'active': False, 'label':'../Weather-App-Reminder/images/13d.png'}, 
-    'Atmosphere': {'active': False, 'label':'../Weather-App-Reminder/images/50d.png'}, 
+    'Clear':{'clear sky':{'active': False, 'label':'../Weather App/images/01d.png'}},
+    'Clouds':{'few clouds': {'active': False, 'label':'../Weather App/images/02d.png'},
+              'scattered clouds': {'active': False, 'label':'../Weather App/images/03d.png'}, 
+              'broken clouds': {'active': False, 'label':'../Weather App/images/04d.png'}}, 
+    'Drizzle':{'drizzle':{'active': False, 'label':'../Weather App/images/09d.png'}}, 
+    'Rain':{'rain':{'active': False, 'label':'../Weather App/images/10d.png'}}, 
+    'Thunderstorm':{'thunderstorm':{'active': False, 'label':'../Weather App/images/11d.png'}}, 
+    'Snow':{'snow':{'active': False, 'label':'../Weather App/images/13d.png'}}, 
+    'Atmosphere': {'atmosphere':{'active': False, 'label':'../Weather App/images/50d.png'}}, 
 }
 
 #------Active Weather Conditions-----#
@@ -135,15 +135,16 @@ for data in weather_now['weather']:
 
 active = []
 for key, value in weather_conditions.items():
-    if value['active']:
-        active.append(f"{value['label']}")      
+    for k, v in value.items():
+        if v['active']:
+            active.append(f"{v['label']}")      
 
 #-----------Send Email-----------#
 
 if active:
     
-    alert_items = ''.join(f"<strong>The forecast is {condition}.</strong><br>Feels like {feel_like}<br>Minimun Temperature: {min_temp}<br>Maximun Temperature: {max_temp}<br>" for condition in active)
-    weather_icon = [active["label"]]
+    alert_items = ''.join(f"<strong>The forecast is {condition}.<br>Feels like {feel_like}<br>Minimun Temperature: {min_temp}<br>Maximun Temperature: {max_temp}</strong><br>" for condition in active)
+    weather_icon = active[0]
                   
     html_body = f"""
     <!DOCTYPE html>
@@ -211,7 +212,7 @@ if active:
     <body>
         <div class="container">
             <div class="header">
-                <div class="weather-icon">{value['label']}</div>
+                <div class="weather-icon">{weather_icon}</div>
                 f'<h1>{temp}</h1>'
                 f'<h3>Feels like {feel_like}</h3>
                 <p style="margin: 5px 0 0 0; opacity: 0.9;">
