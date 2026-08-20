@@ -128,21 +128,10 @@ weather_conditions = {
 
 #------Active Weather Conditions-----#
 
-<<<<<<< HEAD
 for data in weather_now['weather']:
     main = data["main"].title()    
     description = data["description"].lower()    
     active_conditions(main, description)
-=======
-time_report = []
-for data in data["list"]:
-    weather_now = data["weather"][0]["main"].lower ()    
-    if weather_now in weather_conditions:
-        weather_conditions[weather_now]['active'] = True
-        weather_conditions[weather_now]['count'] += 1
-        time = data['dt_txt'].split(" ")[1][:-3]
-        time_report.append(time)
->>>>>>> fe1c3130e665e8db0f0dde462ff1cf8614beae5f
 
 active = []
 for key, value in weather_conditions.items():
