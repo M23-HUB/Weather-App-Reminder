@@ -74,8 +74,8 @@ param_1 = {
   "lat": MY_LAT,
   "lon": MY_LNG,
   "cnt": 6, # Number of intervals returned
-  "appid": "APPID",
-  "units":"metric"
+  "appid": APPID,
+  "units": "metric"
 }
 
 param_2 = {
