@@ -12,65 +12,128 @@ MY_EMAIL = os.environ.get("MY_EMAIL")
 PASSWORD = os.environ.get("PASSWORD")
 APPID = os.environ.get("APPID")
 
+#---------Functions---------#
+
+def active_conditions(main, description):
+    
+    if main in weather_conditions:
+        if main == 'Clouds':
+            if description == 'few clouds':
+                weather_conditions['Clouds']['few clouds']['active'] = True                
+            elif description == 'scattered clouds':
+                weather_conditions['Clouds']['scattered clouds']['active'] = True
+            elif description == 'broken clouds':
+                weather_conditions['Clouds']['broken clouds']['active'] = True
+        elif main == 'Rain':
+            weather_conditions['Rain']['active'] = True
+            if description == "freezing rain":
+                weather_conditions['Rain']['label'] = '../Weather-App-Reminder/images/13d.png'
+            elif description in ['light intensity shower rain','shower rain','heavy intensity shower rain','ragged shower rain']:
+                weather_conditions['Rain']['label'] = '../Weather-App-Reminder/images/09d.png'            
+        elif main == "Clear":
+            weather_conditions['Clear']['active'] = True
+        elif main == 'Drizzle':
+            weather_conditions['Drizzle']['active'] = True
+        elif main == 'Thunderstorm':
+            weather_conditions['Thunderstorm']['active'] = True
+        elif main == 'Snow':
+            weather_conditions['Snow']['active'] = True
+        else:
+            weather_conditions['Atmosphere']['active'] = True
+
+def greetings():
+    time_now = datetime.now()
+    if time_now.hour < 12:
+        return "Good Morning"
+    elif 12 <= time_now.hour < 18:
+        return "Good Afternoon"
+    elif 18 <= time_now.hour:
+        if time_now.hour > sunset_hour:
+            weather_conditions['Clear']['label'] = '../Weather-App-Reminder/images/01n.png' 
+            weather_conditions['Clouds']['few clouds']['label'] = '../Weather-App-Reminder/images/02n.png' 
+        return "Good Evening"
+     
+def tips():
+    """Return practical advice based on the currently active conditions."""
+    active = {condition for condition, values in weather_conditions.items()
+              if values.get('active')}
+
+    if {'Rain', 'Drizzle', 'Thunderstorm'} & active:
+        return "Consider carrying an umbrella and wearing waterproof clothing."
+    if 'Snow' in active:
+        return "Dress warmly and take care on slippery roads and sidewalks."
+    if 'Clear' in active:
+        return "Wear sunscreen and stay hydrated if you will be outside."
+    if 'Atmosphere' in active:
+        return "Visibility may be reduced, so travel carefully."
+    return "Dress comfortably and check the forecast before heading out."
+
 #---------API Request---------#
 
-param = {
+param_1 = {
   "lat": MY_LAT,
   "lon": MY_LNG,
-  "cnt": 5, # Number of intervals returned
-  "appid": APPID
+  "cnt": 6, # Number of intervals returned
+  "appid": "APPID",
+  "units":"metric"
 }
 
-response = requests.get(url="https://api.openweathermap.org/data/2.5/forecast", params=param)
+param_2 = {
+ 'lat': MY_LAT,
+ 'lng': MY_LNG,
+ 'formatted': 0
+}
+
+# 3 hour Report
+
+response = requests.get(url="https://api.openweathermap.org/data/2.5/forecast", params=param_1)
+response.raise_for_status()
+forecast = response.json()
+
+# Current weather repost
+
+response = requests.get(url="https://api.openweathermap.org/data/2.5/weather", params=param_1)
+response.raise_for_status()
+weather_now = response.json()
+
+#  Sunrise - Sunset hours
+
+response = requests.get(url="http://api.sunrise-sunset.org/json", params= param_2)
 response.raise_for_status()
 data = response.json()
-print(data["list"])
+
+#------Veriables-----#
+
+time_now = datetime.now()
+sunset = data['results']['sunset']
+sunset_hour = int(sunset.split("T")[1].split(':')[0])
+temp = round(int(weather_now['main']['temp'],0))
+feel_like = round(int(weather_now['main']['feels_like'],0))
+min_temp = round(int(weather_now['main']['temp_min'],0))
+max_temp = round(int(weather_now['main']['temp_max'],0))
 
 #------Weather Conditions-----#
 
 weather_conditions = {
-    'sunny': {'active': False, 'label': '☀️ Sunny', 'count': 0},
-    'partly cloudy': {'active': False, 'label': '⛅ Partly Cloudy', 'count': 0},
-    'cloudy': {'active': False, 'label': '☁️ Cloudy', 'count': 0},
-    'overcast': {'active': False, 'label': '☁️ Snow', 'count': 0},
-    'rain': {'active': False, 'label': '🌧️ Rain', 'count': 0},
-    'drizzle': {'active': False, 'label': '🌧️ Drizzle', 'count': 0},
-    'snow': {'active': False, 'label': '❄️ Snow', 'count': 0},
-    'sleet': {'active': False, 'label': '🌨️ Sleet', 'count': 0},
-    'hail': {'active': False, 'label': '🌨 Hail', 'count': 0},
-    'mist': {'active': False, 'label': '🌫️ Mist', 'count': 0},
-    'thunderstorm': {'active': False, 'label': '⛈️ Thunderstorm', 'count': 0},
-    'turnado': {'active': False, 'label': '🌪️ Thunderstorm', 'count': 0},
-    'blizzard': {'active': False, 'label': '🌨️ Blizzard', 'count': 0},
-    'harricane': {'active': False, 'label': '🌀 Hurricane', 'count': 0},
-    'windy': {'active': False, 'label': '༄ Thunderstorm', 'count': 0},
-    'fog': {'active': False, 'label': '🌫️ Thunderstorm', 'count': 0},
-    'humid': {'active': False, 'label': '♒︎ Thunderstorm', 'count': 0} 
+    'Clear':{'active': False, 'label':'../Weather-App-Reminder/images/01d.png'},
+    'Clouds':{'few clouds': {'active': False, 'label':'../Weather-App-Reminder/images/02d.png'},
+              'scattered clouds': {'active': False, 'label':'../Weather-App-Reminder/images/03d.png'}, 
+              'broken clouds': {'active': False, 'label':'../Weather-App-Reminder/images/04d.png'}}, 
+    'Drizzle':{'active': False, 'label':'../Weather-App-Reminder/images/09d.png'}, 
+    'Rain':{'active': False, 'label':'../Weather-App-Reminder/images/10d.png'}, 
+    'Thunderstorm':{'active': False, 'label':'../Weather-App-Reminder/images/11d.png'}, 
+    'Snow':{'active': False, 'label':'../Weather-App-Reminder/images/13d.png'}, 
+    'Atmosphere': {'active': False, 'label':'../Weather-App-Reminder/images/50d.png'}, 
 }
-
-#  Check for rain
-
-# for hour_data in data["list"]:
-#     condition_code = hour_data["weather"][0]["id"]
-    
-#     if 700 <= int(condition_code) < 790:
-#         weather_conditions['mist']['active'] = True
-#         weather_conditions['mist']['count'] += 1
-#     elif 600 <= int(condition_code) < 630:
-#         weather_conditions['snow']['active'] = True
-#         weather_conditions['snow']['count'] += 1
-#     elif 500 <= int(condition_code) < 540:
-#         weather_conditions['rain']['active'] = True
-#         weather_conditions['rain']['count'] += 1
-#     elif 300 <= int(condition_code) < 330:
-#         weather_conditions['drizzle']['active'] = True
-#         weather_conditions['drizzle']['count'] += 1
-#     elif 200 <= int(condition_code) < 240:
-#         weather_conditions['thunder']['active'] = True
-#         weather_conditions['thunder']['count'] += 1
 
 #------Active Weather Conditions-----#
 
+<<<<<<< HEAD
+for data in weather_now['weather']:
+    main = data["main"].title()    
+    description = data["description"].lower()    
+    active_conditions(main, description)
+=======
 time_report = []
 for data in data["list"]:
     weather_now = data["weather"][0]["main"].lower ()    
@@ -79,24 +142,19 @@ for data in data["list"]:
         weather_conditions[weather_now]['count'] += 1
         time = data['dt_txt'].split(" ")[1][:-3]
         time_report.append(time)
+>>>>>>> fe1c3130e665e8db0f0dde462ff1cf8614beae5f
 
-active_conditions = []
+active = []
 for key, value in weather_conditions.items():
     if value['active']:
-        active_conditions.append(f"{value['label']} (in {value['count']} forecast periods)")      
+        active.append(f"{value['label']}")      
 
-#-------------Tips-------------#
+#-----------Send Email-----------#
 
-def tips():
-    # Consider carrying an umbrella and dressing appropriately for the weather conditions
-    pass
-
-#------Send Email-----#
-
-if active_conditions:
+if active:
     
-    alert_items = ''.join(f"<strong>{condition}</strong> at {time}<br>" for condition, time in zip(active_conditions, time_report))
-    # weather_icon = [i for i in active_conditions["label"].split("")[0]]
+    alert_items = ''.join(f"<strong>The forecast is {condition}.<br>Feels like {feel_like}<br>Minimun Temperature: {min_temp}<br>Maximun Temperature: {max_temp}</strong><br>" for condition in active)
+    weather_icon = [active["label"]]
                   
     html_body = f"""
     <!DOCTYPE html>
@@ -164,16 +222,17 @@ if active_conditions:
     <body>
         <div class="container">
             <div class="header">
-                <div class="weather-icon"></div>
-                <h1>⚠️ Weather Alert</h1>
+                <div class="weather-icon">{value['label']}</div>
+                f'<h1>{temp}</h1>'
+                f'<h3>Feels like {feel_like}</h3>
                 <p style="margin: 5px 0 0 0; opacity: 0.9;">
-                    Weather conditions for the next few hours
+                    Here is your Weather report for the next few hours
                 </p>
             </div>
             
             <div style="margin: 20px 0;">
                 <p style="font-size: 14px; color: #666;">
-                    <strong>📅 Date:</strong> {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
+                    <strong>📅 Date:</strong> {time_now.strftime('%B %d, %Y at %I:%M %p')}
                 </p>
             </div>
             
@@ -199,13 +258,13 @@ if active_conditions:
     """ 
     
     msg = EmailMessage()
-    msg['Subject'] = "Weather Alert - Action Required"
+    msg['Subject'] = f"Weather Report: {greetings()} - {temp}"
     msg['From'] = MY_EMAIL
     msg['To'] = MY_EMAIL
     
     # Plain text version (for email clients that don't support HTML)
     
-    plain_text = "Weather Alert for the next few hours:\n\n"
+    plain_text = "Weather Report for the next few hours:\n\n"
     plain_text += alert_items
     msg.set_content(plain_text)
     
