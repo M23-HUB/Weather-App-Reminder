@@ -212,7 +212,7 @@ if active:
     <body>
         <div class="container">
             <div class="header">
-                <div class="weather-icon">{weather_icon}</div>
+                <div class="weather-icon"><img src=f'{weather_icon}' alt='Weather icon'></div>
                 f'<h1>{temp}</h1>'
                 f'<h3>Feels like {feel_like}</h3>
                 <p style="margin: 5px 0 0 0; opacity: 0.9;">
