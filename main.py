@@ -27,9 +27,9 @@ def active_conditions(main, description):
         elif main == 'Rain':
             weather_conditions['Rain']['active'] = True
             if description == "freezing rain":
-                weather_conditions['Rain']['label'] = '../Weather-App-Reminder/images/13d.png'
+                weather_conditions['Rain']['label'] = '.../Weather-App-Reminder/images/13d.png'
             elif description in ['light intensity shower rain','shower rain','heavy intensity shower rain','ragged shower rain']:
-                weather_conditions['Rain']['label'] = '../Weather-App-Reminder/images/09d.png'            
+                weather_conditions['Rain']['label'] = '.../Weather-App-Reminder/images/09d.png'            
         elif main == "Clear":
             weather_conditions['Clear']['active'] = True
         elif main == 'Drizzle':
@@ -49,8 +49,8 @@ def greetings():
         return "Good Afternoon"
     elif 18 <= time_now.hour:
         if time_now.hour > sunset_hour:
-            weather_conditions['Clear']['label'] = './Weather-App-Reminder/images/01n.png' 
-            weather_conditions['Clouds']['few clouds']['label'] = './Weather-App-Reminder/images/02n.png' 
+            weather_conditions['Clear']['label'] = '../Weather-App-Reminder/images/01n.png' 
+            weather_conditions['Clouds']['few clouds']['label'] = '../Weather-App-Reminder/images/02n.png' 
         return "Good Evening"
      
 def tips():
@@ -115,15 +115,15 @@ max_temp = round(int(max([i['main']['temp'] for i in forecast['list']])), 0)
 #------Weather Conditions-----#
 
 weather_conditions = {
-    'Clear':{'clear sky':{'active': False, 'label':('./Weather-App-Reminder/images/01d.png')}},
-    'Clouds':{'few clouds': {'active': False, 'label':('./Weather-App-Reminder/images/02d.png')},
-              'scattered clouds': {'active': False, 'label':('./Weather-App-Reminder/images/03d.png')}, 
-              'broken clouds': {'active': False, 'label':('./Weather-App-Reminder/images/04d.png')}}, 
-    'Drizzle':{'drizzle':{'active': False, 'label':('./Weather-App-Reminder/images/09d.png')}}, 
-    'Rain':{'rain':{'active': False, 'label':('./Weather-App-Reminder/images/10d.png')}}, 
-    'Thunderstorm':{'thunderstorm':{'active': False, 'label':('./Weather-App-Reminder/images/11d.png')}}, 
-    'Snow':{'snow':{'active': False, 'label':('./Weather-App-Reminder/images/13d.png')}}, 
-    'Atmosphere': {'atmosphere':{'active': False, 'label':('./Weather-App-Reminder/images/50d.png')}}, 
+    'Clear':{'clear sky':{'active': False, 'label':('../Weather-App-Reminder/images/01d.png')}},
+    'Clouds':{'few clouds': {'active': False, 'label':('../Weather-App-Reminder/images/02d.png')},
+              'scattered clouds': {'active': False, 'label':('../Weather-App-Reminder/images/03d.png')}, 
+              'broken clouds': {'active': False, 'label':('../Weather-App-Reminder/images/04d.png')}}, 
+    'Drizzle':{'drizzle':{'active': False, 'label':('../Weather-App-Reminder/images/09d.png')}}, 
+    'Rain':{'rain':{'active': False, 'label':('../Weather-App-Reminder/images/10d.png')}}, 
+    'Thunderstorm':{'thunderstorm':{'active': False, 'label':('../Weather-App-Reminder/images/11d.png')}}, 
+    'Snow':{'snow':{'active': False, 'label':('../Weather-App-Reminder/images/13d.png')}}, 
+    'Atmosphere': {'atmosphere':{'active': False, 'label':('../Weather-App-Reminder/images/50d.png')}}, 
 }
 
 #------Active Weather Conditions-----#
@@ -143,7 +143,7 @@ for key, value in weather_conditions.items():
 
 if active:
     
-    alert_items = ''.join(f"<strong>The forecast is {condition}.<br>Feels like {feel_like}<br>Minimun Temperature: {min_temp}<br>Maximun Temperature: {max_temp}</strong><br>" for condition in active)
+    alert_items = ''.join(f"<strong>The forecast is {description}.<br>Feels like {feel_like}<br>Minimun Temperature: {min_temp}<br>Maximun Temperature: {max_temp}</strong><br>")
     weather_icon = active[0]
                   
     html_body = f"""
@@ -212,9 +212,9 @@ if active:
     <body>
         <div class="container">
             <div class="header">
-                <div class="weather-icon"><img src=f'{weather_icon}' alt='Weather icon'></div>
-                f'<h1>{temp}</h1>'
-                f'<h3>Feels like {feel_like}</h3>
+                <div class="weather-icon">f"<img src={weather_icon} alt='Weather icon'>"</div>
+                <h1>f'{temp}'</h1>
+                <h3>f'Feels like {feel_like}'</h3>
                 <p style="margin: 5px 0 0 0; opacity: 0.9;">
                     Here is your Weather report for the next few hours
                 </p>
@@ -234,7 +234,7 @@ if active:
             
             <div style="background: #e7f3ff; border-radius: 8px; padding: 15px; margin: 20px 0;">
                 <p style="margin: 0; color: #004085;">
-                    <strong>💡 Tip:</strong> {tips()}
+                    <strong>💡 Tip:</strong> f'{tips()}'
                 </p>
             </div>
             
