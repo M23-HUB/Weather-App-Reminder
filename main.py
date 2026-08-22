@@ -137,7 +137,29 @@ active = []
 for key, value in weather_conditions.items():
     for k, v in value.items():
         if v['active']:
-            active.append(f"{v['label']}")      
+            active.append(k)
+
+active_conditions = []
+for key, value in weather_conditions.items():
+    for k, v in value.items():
+        if v['active']:
+            active_conditions.append(v['label'])
+            print(f"Active: {k} - {v['label']}")
+            
+# Get the first active condition for the main icon
+
+weather_icon = active_conditions[0] if active_conditions else './Weather App/images/01d.png'
+
+# Generate alert items
+
+alert_items = ''
+for label in active_conditions:
+    alert_items += f'''
+    <div class="alert-item">
+        <img src="{label}" alt="Weather icon" style="width: 30px; height: 30px;">
+        <span>The forecast is {label}</span>
+    </div>
+    '''      
 
 #-----------Send Email-----------#
 
@@ -212,9 +234,11 @@ if active:
     <body>
         <div class="container">
             <div class="header">
-                <div class="weather-icon">f"<img src={weather_icon} alt='Weather icon'>"</div>
-                <h1>f'{temp}'</h1>
-                <h3>f'Feels like {feel_like}'</h3>
+                <div class="weather-icon">
+                    <img src='{weather_icon}' alt='Weather icon'>
+                </div>
+                <h1>{temp}</h1>
+                <h3>Feels like {feel_like}</h3>
                 <p style="margin: 5px 0 0 0; opacity: 0.9;">
                     Here is your Weather report for the next few hours
                 </p>
