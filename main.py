@@ -28,9 +28,9 @@ def active_conditions(main, description):
         elif main == 'Rain':
             weather_conditions['Rain']['active'] = True
             if description == "freezing rain":
-                weather_conditions['Rain']['label'] = '.../Weather-App-Reminder/images/13d.png'
+                weather_conditions['Rain']['label'] = '.13d'
             elif description in ['light intensity shower rain','shower rain','heavy intensity shower rain','ragged shower rain']:
-                weather_conditions['Rain']['label'] = '.../Weather-App-Reminder/images/09d.png'            
+                weather_conditions['Rain']['label'] = '.09d'            
         elif main == "Clear":
             weather_conditions['Clear']['active'] = True
         elif main == 'Drizzle':
@@ -51,8 +51,8 @@ def greetings():
         return "Good Afternoon"
     elif 18 <= time_now.hour:
         if time_now.hour > sunset_hour:
-            weather_conditions['Clear']['clear sky']['label'] = '../Weather-App-Reminder/images/01n.png' 
-            weather_conditions['Clouds']['few clouds']['label'] = '../Weather-App-Reminder/images/02n.png' 
+            weather_conditions['Clear']['clear sky']['label'] = '01n' 
+            weather_conditions['Clouds']['few clouds']['label'] = '02n' 
         return "Good Evening"
      
 def tips():
@@ -79,7 +79,7 @@ def tips():
 param_1 = {
   "lat": MY_LAT,
   "lon": MY_LNG,
-  "cnt": 7, # Number of intervals returned
+#   "cnt": 7, # Number of intervals returned
   "appid": APPID,
   "units": "metric"
 }
@@ -122,15 +122,15 @@ max_temp = round(int(max([i['main']['temp_max'] for i in forecast['list']])), 0)
 #------Weather Conditions-----#
 
 weather_conditions = {
-    'Clear':{'clear sky':{'active': False, 'label':('../Weather-App-Reminder/images/01d.png')}},
-    'Clouds':{'few clouds': {'active': False, 'label':('../Weather-App-Reminder/images/02d.png')},
-              'scattered clouds': {'active': False, 'label':('../Weather-App-Reminder/images/03d.png')}, 
-              'broken clouds': {'active': False, 'label':('../Weather-App-Reminder/images/04d.png')}}, 
-    'Drizzle':{'drizzle':{'active': False, 'label':('../Weather-App-Reminder/images/09d.png')}}, 
-    'Rain':{'rain':{'active': False, 'label':('../Weather-App-Reminder/images/10d.png')}}, 
-    'Thunderstorm':{'thunderstorm':{'active': False, 'label':('../Weather-App-Reminder/images/11d.png')}}, 
-    'Snow':{'snow':{'active': False, 'label':('../Weather-App-Reminder/images/13d.png')}}, 
-    'Atmosphere': {'atmosphere':{'active': False, 'label':('../Weather-App-Reminder/images/50d.png')}}, 
+    'Clear':{'clear sky':{'active': False, 'icon':'01d'}},
+    'Clouds':{'few clouds': {'active': False, 'icon':'02d'},
+              'scattered clouds': {'active': False, 'icon':'03d'}, 
+              'broken clouds': {'active': False, 'icon':'04d'}}, 
+    'Drizzle':{'drizzle':{'active': False, 'icon':'09d'}}, 
+    'Rain':{'rain':{'active': False, 'icon':'10d'}}, 
+    'Thunderstorm':{'thunderstorm':{'active': False, 'icon':'11d'}}, 
+    'Snow':{'snow':{'active': False, 'icon':'13d'}}, 
+    'Atmosphere': {'atmosphere':{'active': False, 'icon':'50d'}}, 
 }
 
 #------Active Weather Conditions-----#
@@ -141,30 +141,19 @@ for data in weather_now['weather']:
     active_conditions(main, description)
 
 active = []
-active_conditions = []
+active_icon = []
 for key, value in weather_conditions.items():
     for k, v in value.items():
         if v['active']:
             active.append(k)
-            active_conditions.append(v['label'])
-            print(f"Active: {k} - {v['label']}")
+            active_icon.append(v['icon'])
+            print(f"Active: {k} - {v['icon']}")
             
 # Get the first active condition for the main icon
 
-weather_icon = active_conditions[0] if active_conditions else './Weather App/images/01d.png'
-
-# Generate alert items
-
-alert_items = ''
-for label in active_conditions:
-    alert_items += f'''
-    <div class="alert-item">
-        <img src="{label}" alt="Weather icon" style="width: 30px; height: 30px;">
-        <span>The forecast is {label}</span>
-    </div>
-    '''  
-
-tip_list = tips()    
+weather_icon = active_icon[0] if active_icon else '01d'
+icon_url = f"https://openweathermap.org/img/wn/{active_icon}@2x.png" if active_icon else "https://openweathermap.org/img/wn/01d@2x.png"
+tip_list = tips()
 
 #-----------Send Email-----------#
 
@@ -240,7 +229,7 @@ if active:
         <div class="container">
             <div class="header">
                 <div class="weather-icon">
-                    <img src={weather_icon} alt='Weather icon'>
+                    <img src="{icon_url}" alt='Weather icon'>
                 </div>
                 <h1>{temp}°C</h1>
                 <h3>Feels like {feel_like}°C</h3>
