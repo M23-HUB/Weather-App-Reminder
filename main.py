@@ -217,7 +217,7 @@ if changes:
     
     change_message = f"""
     <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
-        <strong>Weather Change Alert:<br></strong><br>
+        <strong>Weather Change Alert<br></strong><br>
         Weather will change from <strong>{current_weather.title()}</strong> 
         to <strong>{first_change_weather.title()}</strong> at approximately <strong>{first_change_data['time']}</strong>.<br>
         Temperature will be around <strong>{first_change_data['temperature']}°C</strong>.
