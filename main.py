@@ -140,27 +140,47 @@ for data in weather_now['weather']:
     description = data["description"].lower()    
     active_conditions(main, description)
 
-active = []
-active_icon = []
+active_conditions_list = []
 for key, value in weather_conditions.items():
     for k, v in value.items():
-        if v['active']:
-            active.append(k)
-            active_icon.append(v['icon'])
+        if v.get('active', False):
+            active_conditions_list.append({
+                'description': k,
+                'icon': v.get('icon', '01d')
+            })
             print(f"Active: {k} - {v['icon']}")
-            
+
+# Build alert items
+
+alert_items = ''
+if active_conditions_list:
+    for condition in active_conditions_list:
+        alert_items += f'''
+        <div class="alert-item">
+            <strong>The forecast is {condition['description']}.</strong><br>
+            Feels like {feel_like}°C<br>
+            Minimum Temperature: {min_temp}°C<br>
+            Maximum Temperature: {max_temp}°C
+        </div>
+        '''
+else:
+    alert_items = '<div class="alert-item">No active weather alerts</div>'
+                
 # Get the first active condition for the main icon
 
-weather_icon = active_icon[0] if active_icon else '01d'
-icon_url = f"https://openweathermap.org/img/wn/{active_icon}@2x.png" if active_icon else "https://openweathermap.org/img/wn/01d@2x.png"
+weather_icon = active_conditions_list[0]['icon'] if active_conditions_list else '01d'
+icon_url = f"https://openweathermap.org/img/wn/{weather_icon}@2x.png" if weather_icon else "https://openweathermap.org/img/wn/01d@2x.png"
 tip_list = tips()
+tip_text = '<br>• '.join(tip_list)  # Format as bullet points
+if tip_text:
+    tip_text = '• ' + tip_text
 
 #-----------Send Email-----------#
 
-if active:
+if active_conditions_list:
     
-    alert_items = ''.join(f"<strong>The forecast is {description}.<br>Feels like {feel_like}°C<br>Minimun Temperature: {min_temp}°C<br>Maximun Temperature: {max_temp}°C</strong><br>")
-    weather_icon = active[0]
+    # alert_items = ''.join(f"<strong>The forecast is {description}.<br>Feels like {feel_like}°C<br>Minimun Temperature: {min_temp}°C<br>Maximun Temperature: {max_temp}°C</strong><br>")
+    # weather_icon = active[0]
                   
     html_body = f"""
     <!DOCTYPE html>
@@ -252,7 +272,7 @@ if active:
             
             <div style="background: #e7f3ff; border-radius: 8px; padding: 15px; margin: 20px 0;">
                 <p style="margin: 0; color: #004085;">
-                    <strong>💡 Tip:</strong> {tip_list}
+                    <strong>💡 Tip:</strong> {tip_text}
                 </p>
             </div>
             
