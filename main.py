@@ -41,7 +41,7 @@ def active_conditions(main, description):
             weather_conditions['Snow']['active'] = True
         else:
             weather_conditions['Atmosphere']['active'] = True
-
+
 def expected_change():
     current_weather = weather_now['weather'][0]['description'].lower()
     
@@ -234,7 +234,7 @@ if changes:
 else:
     change_message = f"""
     <div style="background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
-        <strong>📊 Weather Outlook:</strong><br>
+        <strong>Weather Outlook:</strong><br>
         Stable weather conditions expected. It will remain <strong>{current_weather}</strong> 
         throughout the day.
     </div>
@@ -334,7 +334,7 @@ if active_conditions_list:
             <h3 style="color: #333;">⚠️ Active Weather Alerts</h3>
             
             <div class="alert-item">
-                {alert_items}
+                {alert_items}<br>
                 {change_message}
             </div>            
 
