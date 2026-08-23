@@ -2,7 +2,8 @@ import os
 import requests
 import smtplib as sm
 from email.message import EmailMessage
-from datetime import datetime
+from datetime import datetime, UTC
+import pytz
 
 #----------CONSTANTS----------#
 
@@ -42,14 +43,15 @@ def active_conditions(main, description):
             weather_conditions['Atmosphere']['active'] = True
 
 def greetings():
-    time_now = datetime.now()
+    cest = pytz.timezone('Europe/Berlin')  # CEST is used in Berlin
+    time_now = datetime.now(cest)
     if time_now.hour < 12:
         return "Good Morning"
     elif 12 <= time_now.hour < 18:
         return "Good Afternoon"
     elif 18 <= time_now.hour:
         if time_now.hour > sunset_hour:
-            weather_conditions['Clear']['label'] = '../Weather-App-Reminder/images/01n.png' 
+            weather_conditions['Clear']['clear sky']['label'] = '../Weather-App-Reminder/images/01n.png' 
             weather_conditions['Clouds']['few clouds']['label'] = '../Weather-App-Reminder/images/02n.png' 
         return "Good Evening"
      
@@ -57,23 +59,27 @@ def tips():
     """Return practical advice based on the currently active conditions."""
     active = {condition for condition, values in weather_conditions.items()
               if values.get('active')}
+    
+    tip_list = []
 
     if {'Rain', 'Drizzle', 'Thunderstorm'} & active:
-        return "Consider carrying an umbrella and wearing waterproof clothing."
+        tip_list.append("Consider carrying an umbrella and wearing waterproof clothing.")
     if 'Snow' in active:
-        return "Dress warmly and take care on slippery roads and sidewalks."
+        tip_list.append("Dress warmly and take care on slippery roads and sidewalks.")
     if 'Clear' in active:
-        return "Wear sunscreen and stay hydrated if you will be outside."
+        tip_list.append("Wear sunscreen and stay hydrated if you will be outside.")
     if 'Atmosphere' in active:
-        return "Visibility may be reduced, so travel carefully."
-    return "Dress comfortably and check the forecast before heading out."
+        tip_list.append("Visibility may be reduced, so travel carefully.")
+    if not tip_list:
+        tip_list.append("Dress comfortably and check the forecast before heading out.")
+    return tip_list
 
 #---------API Request---------#
 
 param_1 = {
   "lat": MY_LAT,
   "lon": MY_LNG,
-  "cnt": 6, # Number of intervals returned
+  "cnt": 7, # Number of intervals returned
   "appid": APPID,
   "units": "metric"
 }
@@ -109,8 +115,8 @@ sunset = data['results']['sunset']
 sunset_hour = int(sunset.split("T")[1].split(':')[0])
 temp = round(int(weather_now['main']['temp']),0)
 feel_like = round(int(weather_now['main']['feels_like']),0)
-min_temp = round(int(weather_now['main']['temp_min']),0)
-max_temp = round(int(max([i['main']['temp'] for i in forecast['list']])), 0)
+min_temp = round(int(min([i['main']['temp_min'] for i in forecast['list']])), 0)
+max_temp = round(int(max([i['main']['temp_max'] for i in forecast['list']])), 0)
 
 #------Weather Conditions-----#
 
@@ -134,15 +140,11 @@ for data in weather_now['weather']:
     active_conditions(main, description)
 
 active = []
-for key, value in weather_conditions.items():
-    for k, v in value.items():
-        if v['active']:
-            active.append(k)
-
 active_conditions = []
 for key, value in weather_conditions.items():
     for k, v in value.items():
         if v['active']:
+            active.append(k)
             active_conditions.append(v['label'])
             print(f"Active: {k} - {v['label']}")
             
@@ -159,7 +161,9 @@ for label in active_conditions:
         <img src="{label}" alt="Weather icon" style="width: 30px; height: 30px;">
         <span>The forecast is {label}</span>
     </div>
-    '''      
+    '''  
+
+tip_list = tips()    
 
 #-----------Send Email-----------#
 
@@ -235,7 +239,7 @@ if active:
         <div class="container">
             <div class="header">
                 <div class="weather-icon">
-                    <img src='{weather_icon}' alt='Weather icon'>
+                    <img src={weather_icon} alt='Weather icon'>
                 </div>
                 <h1>{temp}</h1>
                 <h3>Feels like {feel_like}</h3>
@@ -258,7 +262,7 @@ if active:
             
             <div style="background: #e7f3ff; border-radius: 8px; padding: 15px; margin: 20px 0;">
                 <p style="margin: 0; color: #004085;">
-                    <strong>💡 Tip:</strong> f'{tips()}'
+                    <strong>💡 Tip:</strong> {tip_list}
                 </p>
             </div>
             
@@ -272,7 +276,7 @@ if active:
     """ 
     
     msg = EmailMessage()
-    msg['Subject'] = f"Weather Report: {greetings()} - {temp}"
+    msg['Subject'] = f"{greetings()}. Weather Report: {min_temp} - {max_temp}"
     msg['From'] = MY_EMAIL
     msg['To'] = MY_EMAIL
     
