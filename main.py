@@ -43,8 +43,7 @@ def active_conditions(main, description):
             weather_conditions['Atmosphere']['active'] = True
 
 def expected_change():
-    weather_switch = [w['weather']['description'] for w in forecast['list']]
-    current_weather = weather_now['weather']['description']
+    current_weather = weather_now['weather'][0]['description'].lower()
     
     changes = {}
     
