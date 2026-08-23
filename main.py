@@ -41,20 +41,21 @@ def active_conditions(main, description):
             weather_conditions['Snow']['active'] = True
         else:
             weather_conditions['Atmosphere']['active'] = True
-
+
 def expected_change():
     current_weather = weather_now['weather'][0]['description'].lower()
     
     changes = {}
     
     for interval in forecast['list']:
-        forecast_time = interval['dt_txt'].split(" ")[1].split(":")[0]
+        forecast_time = interval['dt_txt']
         forecast_weather = interval['weather'][0]['description'].lower()
         forecast_temp = round(interval['main']['temp'])
         
         # Check if weather is different from current
         if forecast_weather != current_weather:            
-            hour = int(forecast_time)
+            time_str = forecast_time[:8].split("T")[1].split(":")[0]
+            hour = int(time_str)
             
             if hour == 0:
                 formatted_time = "Midnight"
@@ -111,7 +112,7 @@ def tips():
 param_1 = {
   "lat": MY_LAT,
   "lon": MY_LNG,
-  "cnt": 7, # Number of intervals returned
+  "cnt": 9, # Number of intervals returned
   "appid": APPID,
   "units": "metric"
 }
@@ -189,7 +190,7 @@ if active_conditions_list:
     for condition in active_conditions_list:
         alert_items += f'''
         <div class="alert-item">
-            <strong>The forecast is {condition['description'].title()}.</strong><br><br>
+            <strong>The forecast is {condition['description'].title()}.</strong><br>
             Feels like {feel_like}°C<br>
             Minimum Temperature: {min_temp}°C<br>
             Maximum Temperature: {max_temp}°C<br>
@@ -217,9 +218,8 @@ if changes:
     
     change_message = f"""
     <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
-        <strong>Weather Change Alert<br></strong><br>
-        Weather will change from <strong>{current_weather.title()}</strong> 
-        to <strong>{first_change_weather.title()}</strong> at approximately <strong>{first_change_data['time']}</strong>.<br>
+        <strong>Weather Change Alert.</strong><br>
+        Expect <strong>{first_change_weather}</strong> at approximately <strong>{first_change_data['time']}</strong>.<br>
         Temperature will be around <strong>{first_change_data['temperature']}°C</strong>.
     </div>
     """
@@ -233,9 +233,8 @@ if changes:
 else:
     change_message = f"""
     <div style="background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
-        <strong>Weather Outlook:</strong><br>
-        Stable weather conditions expected. It will remain <strong>{current_weather}</strong> 
-        throughout the day.
+        <strong>Weather Outlook.</strong><br>
+        Stable weather conditions expected throughout the day.
     </div>
     """
 
@@ -333,7 +332,7 @@ if active_conditions_list:
             <h3 style="color: #333;">⚠️ Active Weather Alerts</h3>
             
             <div class="alert-item">
-                {alert_items}<br>
+                {alert_items}
                 {change_message}
             </div>            
 
