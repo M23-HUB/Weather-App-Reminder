@@ -79,7 +79,7 @@ def tips():
 param_1 = {
   "lat": MY_LAT,
   "lon": MY_LNG,
-#   "cnt": 7, # Number of intervals returned
+  "cnt": 7, # Number of intervals returned
   "appid": APPID,
   "units": "metric"
 }
