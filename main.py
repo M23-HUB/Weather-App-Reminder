@@ -189,7 +189,7 @@ if active_conditions_list:
     for condition in active_conditions_list:
         alert_items += f'''
         <div class="alert-item">
-            <strong>The forecast is {condition['description'].title()}.</strong><br>
+            <strong>The forecast is {condition['description'].title()}.</strong><br><br>
             Feels like {feel_like}°C<br>
             Minimum Temperature: {min_temp}°C<br>
             Maximum Temperature: {max_temp}°C<br>
@@ -217,9 +217,9 @@ if changes:
     
     change_message = f"""
     <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
-        <strong>⚠️ Weather Change Alert:</strong><br>
-        Weather will change from <strong>{current_weather}</strong> 
-        to <strong>{first_change_weather}</strong> at approximately <strong>{first_change_data['time']}</strong>.<br>
+        <strong>Weather Change Alert:<br></strong><br>
+        Weather will change from <strong>{current_weather}.title()</strong> 
+        to <strong>{first_change_weather}.title()</strong> at approximately <strong>{first_change_data['time']}</strong>.<br>
         Temperature will be around <strong>{first_change_data['temperature']}°C</strong>.
     </div>
     """
