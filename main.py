@@ -178,10 +178,7 @@ if tip_text:
 #-----------Send Email-----------#
 
 if active_conditions_list:
-    
-    # alert_items = ''.join(f"<strong>The forecast is {description}.<br>Feels like {feel_like}°C<br>Minimun Temperature: {min_temp}°C<br>Maximun Temperature: {max_temp}°C</strong><br>")
-    # weather_icon = active[0]
-                  
+                      
     html_body = f"""
     <!DOCTYPE html>
     <html>
