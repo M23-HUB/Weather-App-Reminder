@@ -1,0 +1,104 @@
+What the App Does
+
+This is an automated weather alert system that:
+1. Fetches real-time weather data for a specific location (Prague in this case)
+2. Sends daily email notifications with weather updates
+3. Provides practical tips based on current weather conditions
+4. Displays key weather information including:
+   - Current temperature and "feels like" temperature
+   - Minimum and maximum temperatures
+   - Active weather conditions (Clear, Clouds, Rain, Snow, etc.)
+   - Sunrise/sunset times
+
+ How It Works
+
+ The Flow:
+1. API Requests → Fetches weather data from OpenWeatherMap
+2. Data Processing → Analyzes and structures the weather information
+3. Email Generation → Creates a nicely formatted HTML email
+4. Automated Delivery → Sends the email via Gmail's SMTP server
+
+ What You Get:
+- Daily morning/afternoon/evening greeting based on your local time
+- Temperature range for the day
+- Active weather alerts with visual icons
+- Practical weather tips (umbrella, sunscreen, etc.)
+- Date and time of the report
+
+---
+
+ Technologies Used
+
+ 🐍 Python - Core Programming Language
+
+ 📡 APIs Used:
+1. OpenWeatherMap API (`https://api.openweathermap.org`)
+   - Forecast endpoint: Gets 3-hour interval weather predictions
+   - Current weather endpoint: Gets real-time weather conditions
+   - Requires API key (APPID)
+
+2. Sunrise-Sunset API (`http://api.sunrise-sunset.org`)
+   - Gets sunrise/sunset times for your location
+   - Used to determine if it's day or night for appropriate icons
+
+ 📧 Email System:
+- smtplib: Python's built-in SMTP library for sending emails
+- EmailMessage: For constructing multi-part email messages
+- Gmail SMTP: `smtp.gmail.com` as the email service provider
+- HTML & CSS: For creating visually appealing email templates
+- Base64 encoding: For embedding images (if using local images)
+
+ 🔐 Security:
+- Environment variables: Sensitive data stored securely
+  - `MY_EMAIL`: Your email address
+  - `PASSWORD`: Your email password (app password for Gmail)
+  - `APPID`: OpenWeatherMap API key
+
+ 🕐 Time Handling:
+- datetime: For date/time operations
+- pytz: For timezone handling (Europe/Berlin/CEST)
+- UTC: For standard time reference
+
+ 🔧 Additional Libraries:
+- requests: For making HTTP API calls
+- os: For accessing environment variables
+- json: For parsing API responses
+
+---
+
+ File Structure
+
+```
+Weather-App-Reminder/
+├── main.py                          # Main application code
+├── requirements.txt                 # Python dependencies
+├── .github/workflows/               # GitHub Actions for automation
+├── images/                          # Weather icons (if using local)
+├── Weather Reminder App - Overview  # Project discription
+└── README.md                        # Project documentation
+```
+
+---
+
+ Why It's Built This Way
+
+| Component | Why Used |
+|-----------|----------|
+| OpenWeatherMap API | Reliable, free weather data with high update frequency |
+| SMTP/Gmail | Free and widely supported email delivery |
+| Environment Variables | Security best practice - never hardcode credentials |
+| HTML Email | Better visual presentation than plain text |
+| Timezones | Accurate greetings and correct day/night icons |
+| Modular Functions | Clean, maintainable, and reusable code |
+
+---
+
+ Simple Explanation
+
+Think of it as your personal weather assistant that:
+- Checks the weather automatically every day
+- Sends you a beautifully formatted email with the forecast
+- Tells you what to wear and whether to bring an umbrella
+- Runs completely in the background (can be automated with GitHub Actions)
+
+No manual checking needed - it does everything for you and delivers the information straight to your inbox!
