@@ -170,7 +170,7 @@ tip_list = tips()
 
 if active:
     
-    alert_items = ''.join(f"<strong>The forecast is {description}.<br>Feels like {feel_like}<br>Minimun Temperature: {min_temp}<br>Maximun Temperature: {max_temp}</strong><br>")
+    alert_items = ''.join(f"<strong>The forecast is {description}.<br>Feels like {feel_like}°C<br>Minimun Temperature: {min_temp}°C<br>Maximun Temperature: {max_temp}°C</strong><br>")
     weather_icon = active[0]
                   
     html_body = f"""
@@ -242,8 +242,8 @@ if active:
                 <div class="weather-icon">
                     <img src={weather_icon} alt='Weather icon'>
                 </div>
-                <h1>{temp}</h1>
-                <h3>Feels like {feel_like}</h3>
+                <h1>{temp}°C</h1>
+                <h3>Feels like {feel_like}°C</h3>
                 <p style="margin: 5px 0 0 0; opacity: 0.9;">
                     Here is your Weather report for the next few hours
                 </p>
@@ -277,7 +277,7 @@ if active:
     """ 
     
     msg = EmailMessage()
-    msg['Subject'] = f"{greetings()}. Weather Report: {min_temp}° - {max_temp}°"
+    msg['Subject'] = f"{greetings()}. Weather Report For Today: {min_temp}° - {max_temp}°"
     msg['From'] = MY_EMAIL
     msg['To'] = MY_EMAIL
     
