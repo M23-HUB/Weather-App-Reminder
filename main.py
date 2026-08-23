@@ -54,7 +54,7 @@ def expected_change():
         
         # Check if weather is different from current
         if forecast_weather != current_weather:            
-            time_str = forecast_time[:8].split("T")[1].split(":")[0]
+            time_str = forecast_time.split("T")[1].split(":")[0]
             hour = int(time_str)
             
             if hour == 0:
