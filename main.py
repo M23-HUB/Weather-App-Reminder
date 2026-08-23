@@ -71,7 +71,7 @@ def tips():
     if 'Atmosphere' in active:
         tip_list.append("Visibility may be reduced, so travel carefully.")
     if not tip_list:
-        tip_list.append("Dress comfortably and dont't forget to check the forecast before heading out.")
+        tip_list.append("Dress comfortably and don't forget to check the forecast before heading out.")
     return tip_list
 
 #---------API Request---------#
@@ -157,7 +157,7 @@ if active_conditions_list:
     for condition in active_conditions_list:
         alert_items += f'''
         <div class="alert-item">
-            <strong>The forecast is {condition['description']}.</strong><br>
+            <strong>The forecast is {condition['description'].title()}.</strong><br>
             Feels like {feel_like}°C<br>
             Minimum Temperature: {min_temp}°C<br>
             Maximum Temperature: {max_temp}°C
