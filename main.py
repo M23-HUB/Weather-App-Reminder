@@ -71,7 +71,7 @@ def tips():
     if 'Atmosphere' in active:
         tip_list.append("Visibility may be reduced, so travel carefully.")
     if not tip_list:
-        tip_list.append("Dress comfortably and check the forecast before heading out.")
+        tip_list.append("Dress comfortably and dont't forget to check the forecast before heading out.")
     return tip_list
 
 #---------API Request---------#
@@ -269,7 +269,7 @@ if active_conditions_list:
             
             <div style="background: #e7f3ff; border-radius: 8px; padding: 15px; margin: 20px 0;">
                 <p style="margin: 0; color: #004085;">
-                    <strong>💡 Tip:</strong> {tip_text}
+                    <strong>💡 Tips:</strong><br>{tip_text}
                 </p>
             </div>
             
