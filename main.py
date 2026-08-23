@@ -2,7 +2,7 @@ import os
 import requests
 import smtplib as sm
 from email.message import EmailMessage
-from datetime import datetime, UTC
+from datetime import datetime
 import pytz
 
 #----------CONSTANTS----------#
