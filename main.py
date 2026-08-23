@@ -43,7 +43,7 @@ def active_conditions(main, description):
             weather_conditions['Atmosphere']['active'] = True
 
 def greetings():
-    cest = pytz.timezone('Europe/Berlin')  # CEST is used in Berlin
+    cest = pytz.timezone('Europe/Berlin')
     time_now = datetime.now(cest)
     if time_now.hour < 12:
         return "Good Morning"
@@ -110,7 +110,8 @@ data = response.json()
 
 #------Veriables-----#
 
-time_now = datetime.now()
+cest = pytz.timezone('Europe/Berlin')
+time_now = datetime.now(cest)
 sunset = data['results']['sunset']
 sunset_hour = int(sunset.split("T")[1].split(':')[0])
 temp = round(int(weather_now['main']['temp']),0)
@@ -276,7 +277,7 @@ if active:
     """ 
     
     msg = EmailMessage()
-    msg['Subject'] = f"{greetings()}. Weather Report: {min_temp} - {max_temp}"
+    msg['Subject'] = f"{greetings()}. Weather Report: {min_temp}° - {max_temp}°"
     msg['From'] = MY_EMAIL
     msg['To'] = MY_EMAIL
     
