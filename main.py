@@ -48,7 +48,7 @@ def expected_change():
     changes = {}
     
     for interval in forecast['list']:
-        forecast_time = interval['dt_txt'].split("T")[1].split(":")[0]
+        forecast_time = interval['dt_txt'].split(" ")[1].split(":")[0]
         forecast_weather = interval['weather'][0]['description'].lower()
         forecast_temp = round(interval['main']['temp'])
         
