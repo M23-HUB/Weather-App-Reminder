@@ -42,6 +42,40 @@ def active_conditions(main, description):
         else:
             weather_conditions['Atmosphere']['active'] = True
 
+def expected_change():
+    weather_switch = [w['weather']['description'] for w in forecast['list']]
+    current_weather = weather_now['weather']['description']
+    
+    changes = {}
+    
+    for interval in forecast['list']:
+        forecast_time = interval['dt_txt']
+        forecast_weather = interval['weather'][0]['description'].lower()
+        forecast_temp = round(interval['main']['temp'])
+        
+        # Check if weather is different from current
+        if forecast_weather != current_weather:            
+            time_str = forecast_time.split("T")[1].split(":")[0]
+            hour = int(time_str)
+            
+            if hour == 0:
+                formatted_time = "Midnight"
+            elif hour < 12:
+                formatted_time = f"{hour}:00 AM"
+            elif hour == 12:
+                formatted_time = "12:00 PM"
+            else:
+                formatted_time = f"{hour-12}:00 PM"
+                        
+            if forecast_weather not in changes:
+                changes[forecast_weather] = {
+                    'time': formatted_time,
+                    'temperature': forecast_temp,
+                    'hour': hour
+                }
+    
+    return changes, current_weather
+
 def greetings():
     cest = pytz.timezone('Europe/Berlin')
     time_now = datetime.now(cest)
@@ -160,7 +194,8 @@ if active_conditions_list:
             <strong>The forecast is {condition['description'].title()}.</strong><br>
             Feels like {feel_like}°C<br>
             Minimum Temperature: {min_temp}°C<br>
-            Maximum Temperature: {max_temp}°C
+            Maximum Temperature: {max_temp}°C<br>
+            {expected_change}
         </div>
         '''
 else:
@@ -170,6 +205,42 @@ else:
 
 weather_icon = active_conditions_list[0]['icon'] if active_conditions_list else '01d'
 icon_url = f"https://openweathermap.org/img/wn/{weather_icon}@2x.png" if weather_icon else "https://openweathermap.org/img/wn/01d@2x.png"
+
+# Get weather change information
+
+changes, current_weather = expected_change()
+
+change_message = ""
+
+if changes:
+    
+    first_change_weather = list(changes.keys())[0]
+    first_change_data = changes[first_change_weather]
+    
+    change_message = f"""
+    <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
+        <strong>⚠️ Weather Change Alert:</strong><br>
+        Weather will change from <strong>{current_weather}</strong> 
+        to <strong>{first_change_weather}</strong> at approximately <strong>{first_change_data['time']}</strong>.<br>
+        Temperature will be around <strong>{first_change_data['temperature']}°C</strong>.
+    </div>
+    """
+    
+    if len(changes) > 1:
+        change_message += """
+        <div style="font-size: 12px; color: #666; margin-top: 5px;">
+            <em>Multiple weather changes expected throughout the day.</em>
+        </div>
+        """
+else:
+    change_message = f"""
+    <div style="background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
+        <strong>📊 Weather Outlook:</strong><br>
+        Stable weather conditions expected. It will remain <strong>{current_weather}</strong> 
+        throughout the day.
+    </div>
+    """
+
 tip_list = tips()
 tip_text = '<br>• '.join(tip_list)  # Format as bullet points
 if tip_text:
@@ -265,8 +336,9 @@ if active_conditions_list:
             
             <div class="alert-item">
                 {alert_items}
-            </div>
-            
+                {change_message}
+            </div>            
+
             <div style="background: #e7f3ff; border-radius: 8px; padding: 15px; margin: 20px 0;">
                 <p style="margin: 0; color: #004085;">
                     <strong>💡 Tips:</strong><br>{tip_text}
