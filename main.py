@@ -48,14 +48,13 @@ def expected_change():
     changes = {}
     
     for interval in forecast['list']:
-        forecast_time = interval['dt_txt']
+        forecast_time = interval['dt_txt'].split("T")[1].split(":")[0]
         forecast_weather = interval['weather'][0]['description'].lower()
         forecast_temp = round(interval['main']['temp'])
         
         # Check if weather is different from current
         if forecast_weather != current_weather:            
-            time_str = forecast_time.split("T")[1].split(":")[0]
-            hour = int(time_str)
+            hour = int(forecast_time)
             
             if hour == 0:
                 formatted_time = "Midnight"
