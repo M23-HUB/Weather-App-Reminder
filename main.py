@@ -176,10 +176,10 @@ for data in weather_now['weather']:
 active_conditions_list = []
 for key, value in weather_conditions.items():
     for k, v in value.items():
-        if v.get('active', False):
+        if v['active']:
             active_conditions_list.append({
                 'description': k,
-                'icon': v.get('icon', '01d')
+                'icon': v['01d']
             })
             print(f"Active: {k} - {v['icon']}")
 
