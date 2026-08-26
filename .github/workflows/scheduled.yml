@@ -15,10 +15,10 @@ on:
     # ║  Use https://time.is/UTC to find your local time in UTC       ║
     # ╚═══════════════════════════════════════════════════════════════╝
     - cron: '30 2 * * *'
-    - cron: '30 8 * * *'
+    - cron: '30 11 * * *'
     - cron: '30 15 * * *'
     - cron: '30 18 * * *'
-    - cron: '30 20 * * *'
+    - cron: '30 21 * * *'
 
   # This adds a "Run workflow" button so you can test manually
   workflow_dispatch:
