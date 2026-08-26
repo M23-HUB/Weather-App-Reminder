@@ -25,6 +25,8 @@ def active_conditions(main, description):
                 weather_conditions['Clouds']['scattered clouds']['active'] = True
             elif description == 'broken clouds':
                 weather_conditions['Clouds']['broken clouds']['active'] = True
+            elif description == 'overcast clouds':
+                weather_conditions['Clouds']['overcast clouds']['active'] = True
         elif main == 'Rain':
             weather_conditions['Rain']['active'] = True
             if description == "freezing rain":
@@ -152,13 +154,18 @@ feel_like = round(int(weather_now['main']['feels_like']),0)
 min_temp = round(int(min([i['main']['temp_min'] for i in forecast['list']])), 0)
 max_temp = round(int(max([i['main']['temp_max'] for i in forecast['list']])), 0)
 
+alert_items = ''
+change_message = ''
+active_conditions_list = []
+
 #------Weather Conditions-----#
 
 weather_conditions = {
     'Clear':{'clear sky':{'active': False, 'icon':'01d'}},
     'Clouds':{'few clouds': {'active': False, 'icon':'02d'},
               'scattered clouds': {'active': False, 'icon':'03d'}, 
-              'broken clouds': {'active': False, 'icon':'04d'}}, 
+              'broken clouds': {'active': False, 'icon':'04d'}, 
+              'overcast clouds': {'active': False, 'icon':'04d'}}, 
     'Drizzle':{'drizzle':{'active': False, 'icon':'09d'}}, 
     'Rain':{'rain':{'active': False, 'icon':'10d'}}, 
     'Thunderstorm':{'thunderstorm':{'active': False, 'icon':'11d'}}, 
@@ -173,7 +180,6 @@ for data in weather_now['weather']:
     description = data["description"].lower()    
     active_conditions(main, description)
 
-active_conditions_list = []
 for key, value in weather_conditions.items():
     for k, v in value.items():
         if v['active']:
@@ -183,9 +189,19 @@ for key, value in weather_conditions.items():
             })
             print(f"Active: {k} - {v['icon']}")
 
-# Build alert items
+#----------Build alert messages----------#
 
-alert_items = ''
+    # First active condition for the main icon
+
+weather_icon = active_conditions_list[0]['icon'] if active_conditions_list else '01d'
+icon_url = f"https://openweathermap.org/img/wn/{weather_icon}@2x.png" if weather_icon else "https://openweathermap.org/img/wn/01d@2x.png"
+
+    # Get weather change information
+
+changes, current_weather = expected_change()
+
+    # Alert messages
+    
 if active_conditions_list:
     for condition in active_conditions_list:
         alert_items += f'''
@@ -198,19 +214,9 @@ if active_conditions_list:
         </div>
         '''
 else:
-    alert_items = '<div class="alert-item">No active weather alerts</div>'
+    alert_items = "<div class='alert-item'>No active weather alerts. Check Code to see if today's weather forcast was included</div>"
                 
-# Get the first active condition for the main icon
-
-weather_icon = active_conditions_list[0]['icon'] if active_conditions_list else '01d'
-icon_url = f"https://openweathermap.org/img/wn/{weather_icon}@2x.png" if weather_icon else "https://openweathermap.org/img/wn/01d@2x.png"
-
-# Get weather change information
-
-changes, current_weather = expected_change()
-
-change_message = ""
-
+                
 if changes:
     
     first_change_weather = list(changes.keys())[0]
@@ -351,10 +357,13 @@ if active_conditions_list:
     </html>
     """ 
     
+    # HTML version
+    
     msg = EmailMessage()
     msg['Subject'] = f"{greetings()}. Weather Report For Today: {min_temp}° - {max_temp}°"
     msg['From'] = MY_EMAIL
     msg['To'] = MY_EMAIL
+    msg.add_alternative(html_body, subtype='html')
     
     # Plain text version (for email clients that don't support HTML)
     
@@ -362,9 +371,113 @@ if active_conditions_list:
     plain_text += alert_items
     msg.set_content(plain_text)
     
-    # HTML version
+    # Send the email
     
+    with sm.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()
+        connection.login(user=MY_EMAIL, password=PASSWORD)
+        connection.send_message(msg)
+else:
+    html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    padding: 20px;
+                }}
+                .container {{
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background: white;
+                    border-radius: 10px;
+                    padding: 30px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                }}
+                .header {{
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 10px 10px 0 0;
+                    margin: -30px -30px 20px -30px;
+                    text-align: center;
+                }}
+                .header h1 {{
+                    margin: 0;
+                    font-size: 24px;
+                }}
+                .alert-item {{
+                    background: #fff3cd;
+                    border-left: 4px solid #ffc107;
+                    padding: 12px 16px;
+                    margin: 10px 0;
+                    border-radius: 4px;
+                    font-size: 16px;
+                }}
+                .alert-item strong {{
+                    color: #856404;
+                }}
+                .footer {{
+                    margin-top: 30px;
+                    padding-top: 20px;
+                    border-top: 1px solid #e0e0e0;
+                    text-align: center;
+                    color: #666;
+                    font-size: 12px;
+                }}
+                .badge {{
+                    display: inline-block;
+                    background: #dc3545;
+                    color: white;
+                    padding: 4px 10px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: bold;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">                    
+                    <p style="margin: 5px 0 0 0; opacity: 0.9;">
+                        Missing Weather report for the next few hours
+                    </p>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <p style="font-size: 14px; color: #666;">
+                        <strong>📅 Date:</strong> {time_now.strftime('%B %d, %Y at %I:%M %p')}
+                    </p>
+                </div>
+                
+                <div class="alert-item">
+                    {alert_items}
+                </div> 
+                                
+                <div class="footer">
+                    <p>Stay safe!</p>
+                    <p>This is an automated weather alert from My Weather Reminder App</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """ 
+    
+    # HTML version
+        
+    msg = EmailMessage()
+    msg['Subject'] = f"{greetings()}. Weather Report For Today: No Report"
+    msg['From'] = MY_EMAIL
+    msg['To'] = MY_EMAIL
     msg.add_alternative(html_body, subtype='html')
+    
+    # Plain text version (for email clients that don't support HTML)
+    
+    plain_text = "Missing Weather report for the next few hours:\n\n"
+    plain_text += alert_items
+    msg.set_content(plain_text)      
     
     # Send the email
     
