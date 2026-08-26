@@ -357,19 +357,20 @@ if active_conditions_list:
     </html>
     """ 
     
-    # HTML version
-    
     msg = EmailMessage()
-    msg['Subject'] = f"{greetings()}. Weather Report For Today: {min_temp}° - {max_temp}°"
-    msg['From'] = MY_EMAIL
-    msg['To'] = MY_EMAIL
-    msg.add_alternative(html_body, subtype='html')
     
     # Plain text version (for email clients that don't support HTML)
     
     plain_text = "Weather Report for the next few hours:\n\n"
     plain_text += alert_items
     msg.set_content(plain_text)
+    
+    # HTML version
+    
+    msg['Subject'] = f"{greetings()}. Weather Report For Today: {min_temp}° - {max_temp}°"
+    msg['From'] = MY_EMAIL
+    msg['To'] = MY_EMAIL
+    msg.add_alternative(html_body, subtype='html')    
     
     # Send the email
     
@@ -465,19 +466,20 @@ else:
         </html>
         """ 
     
-    # HTML version
-        
     msg = EmailMessage()
-    msg['Subject'] = f"{greetings()}. Weather Report For Today: No Report"
-    msg['From'] = MY_EMAIL
-    msg['To'] = MY_EMAIL
-    msg.add_alternative(html_body, subtype='html')
     
     # Plain text version (for email clients that don't support HTML)
     
     plain_text = "Missing Weather report for the next few hours:\n\n"
     plain_text += alert_items
     msg.set_content(plain_text)      
+    
+    # HTML version
+        
+    msg['Subject'] = f"{greetings()}. Weather Report For Today: No Report"
+    msg['From'] = MY_EMAIL
+    msg['To'] = MY_EMAIL
+    msg.add_alternative(html_body, subtype='html')    
     
     # Send the email
     
