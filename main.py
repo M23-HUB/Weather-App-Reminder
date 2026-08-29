@@ -116,7 +116,8 @@ def get_location_name():
     coordinates = f"{MY_LAT}, {MY_LNG}"
     try:
         location = geolocator.reverse(coordinates)
-        return location.address
+        address_parts = location.raw.get('address', {})
+        return address_parts.get('city', 'N/A')
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
@@ -383,7 +384,7 @@ if active_conditions_list:
     
     # HTML version
     
-    msg['Subject'] = f"{greetings()}. Weather Report For Today: {min_temp}° - {max_temp}°"
+    msg['Subject'] = f"{greetings()}. Weather Report For Today: {min_temp}° - {max_temp}° in {location_name}"
     msg['From'] = MY_EMAIL
     msg['To'] = MY_EMAIL
     msg.add_alternative(html_body, subtype='html')    
