@@ -258,7 +258,9 @@ if active_conditions_list:
         </div>
         """
 else:
-    alert_items = "<div class='alert-item'>No active weather alerts. Check Code to see if today's weather forcast was included</div>"             
+    alert_items = """<div class='alert-item'><strong>No active weather alerts.</strong><br><br>
+                     Either an error occurred while retrieving the data or 
+                     today's weather forcast was not included in the list</div>"""             
                 
 tip_list = tips()
 tip_text = '<br>• '.join(tip_list)  # Format as bullet points
