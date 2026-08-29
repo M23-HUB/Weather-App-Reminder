@@ -3,6 +3,7 @@ import requests
 import smtplib as sm
 from email.message import EmailMessage
 from datetime import datetime
+from geopy.geocoders import Nominatim
 import pytz
 
 #----------CONSTANTS----------#
@@ -109,6 +110,17 @@ def tips():
         tip_list.append("Dress comfortably and don't forget to check the forecast before heading out.")
     return tip_list
 
+def get_location_name():
+    
+    geolocator = Nominatim(user_agent="my_weather_reminder_app")
+    coordinates = f"{MY_LAT}, {MY_LNG}"
+    try:
+        location = geolocator.reverse(coordinates)
+        return location.address
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+    
 #---------API Request---------#
 
 param_1 = {
@@ -153,7 +165,7 @@ temp = round(int(weather_now['main']['temp']),0)
 feel_like = round(int(weather_now['main']['feels_like']),0)
 min_temp = round(int(min([i['main']['temp_min'] for i in forecast['list']])), 0)
 max_temp = round(int(max([i['main']['temp_max'] for i in forecast['list']])), 0)
-
+location_name = get_location_name()
 alert_items = ''
 change_message = ''
 active_conditions_list = []
@@ -182,12 +194,15 @@ for data in weather_now['weather']:
 
 for key, value in weather_conditions.items():
     for k, v in value.items():
-        if v['active']:
-            active_conditions_list.append({
-                'description': k,
-                'icon': v['icon']
-            })
-            print(f"Active: {k} - {v['icon']}")
+        try:
+            if v['active']:
+                active_conditions_list.append({
+                    'description': k,
+                    'icon': v['icon']
+                })
+                print(f"Active: {k} - {v['icon']}")
+        except AttributeError:
+            print(f"Unexpected data type: {type(v)}")
 
 #----------Build alert messages----------#
 
@@ -213,37 +228,36 @@ if active_conditions_list:
             {expected_change}
         </div>
         '''
-else:
-    alert_items = "<div class='alert-item'>No active weather alerts. Check Code to see if today's weather forcast was included</div>"
-                
-                
-if changes:
-    
-    first_change_weather = list(changes.keys())[0]
-    first_change_data = changes[first_change_weather]
-    
-    change_message = f"""
-    <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
-        <strong>Weather Change Alert.</strong><br><br>
-        Expect <strong>{first_change_weather}</strong> at approximately <strong>{first_change_data['time']}</strong>.<br>
-        Temperature will be around <strong>{first_change_data['temperature']}°C</strong>.
-    </div>
-    """
-    
-    if len(changes) > 1:
-        change_message += """
-        <div style="font-size: 12px; color: #666; margin-top: 5px;">
-            <em>Multiple weather changes expected throughout the day.</em>
+        
+    if changes:
+        
+        first_change_weather = list(changes.keys())[0]
+        first_change_data = changes[first_change_weather]
+        
+        change_message = f"""
+        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
+            <strong>Weather Change Alert.</strong><br><br>
+            Expect <strong>{first_change_weather}</strong> at approximately <strong>{first_change_data['time']}</strong>.<br>
+            Temperature will be around <strong>{first_change_data['temperature']}°C</strong>.
+        </div>
+        """
+        
+        if len(changes) > 1:
+            change_message += """
+            <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                <em>Multiple weather changes expected throughout the day.</em>
+            </div>
+            """
+    else:
+        change_message = f"""
+        <div style="background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
+            <strong>Weather Outlook.</strong><br>
+            Stable weather conditions expected throughout the day.
         </div>
         """
 else:
-    change_message = f"""
-    <div style="background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 10px 15px; margin: 10px 0; border-radius: 4px;">
-        <strong>Weather Outlook.</strong><br>
-        Stable weather conditions expected throughout the day.
-    </div>
-    """
-
+    alert_items = "<div class='alert-item'>No active weather alerts. Check Code to see if today's weather forcast was included</div>"             
+                
 tip_list = tips()
 tip_text = '<br>• '.join(tip_list)  # Format as bullet points
 if tip_text:
@@ -331,7 +345,8 @@ if active_conditions_list:
             
             <div style="margin: 20px 0;">
                 <p style="font-size: 14px; color: #666;">
-                    <strong>📅 Date:</strong> {time_now.strftime('%B %d, %Y at %I:%M %p')}
+                    <strong>📅 Date:</strong> {time_now.strftime('%B %d, %Y at %I:%M %p')}<br>
+                    {location_name}
                 </p>
             </div>
             
@@ -449,7 +464,8 @@ else:
                 
                 <div style="margin: 20px 0;">
                     <p style="font-size: 14px; color: #666;">
-                        <strong>📅 Date:</strong> {time_now.strftime('%B %d, %Y at %I:%M %p')}
+                        <strong>📅 Date:</strong> {time_now.strftime('%B %d, %Y at %I:%M %p')}<br>
+                        {location_name}
                     </p>
                 </div>
                 
