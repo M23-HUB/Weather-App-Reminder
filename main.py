@@ -195,14 +195,15 @@ for data in weather_now['weather']:
 for key, value in weather_conditions.items():
     for k, v in value.items():
         try:
-            if v['active']:
+            if isinstance(v, dict) and v.get('active'):
                 active_conditions_list.append({
                     'description': k,
-                    'icon': v['icon']
+                    'icon': v.get('icon', '') 
                 })
-                print(f"Active: {k} - {v['icon']}")
-        except AttributeError:
-            print(f"Unexpected data type: {type(v)}")
+                print(f"Active: {k} - {v.get('icon', 'N/A')}")
+        except (AttributeError, TypeError) as e:
+            print(f"Unexpected data type for '{k}': {type(v)} - {e}")
+            continue
 
 #----------Build alert messages----------#
 
