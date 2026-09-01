@@ -195,10 +195,8 @@ for key, value in weather_conditions.items():
         try:
             if isinstance(v, dict) and v.get('active'):
                 active_conditions_list.append({
-                    'description': k,
-                    'icon': v.get('icon', '') 
-                })
-                print(f"Active: {k} - {v.get('icon', 'N/A')}")
+                    'description': k})
+                print(f"Active: {k}")
                 tip_list = tips(k)
                 tip_text = '<br>• '.join(tip_list)  # Format as bullet points
                 if tip_text:
@@ -212,7 +210,7 @@ for key, value in weather_conditions.items():
 
     # First active condition for the main icon
 
-weather_icon = active_conditions_list[0]['icon'] if active_conditions_list else '01d'
+weather_icon = weather_now["weather"][0]["icon"]
 icon_url = f"https://openweathermap.org/img/wn/{weather_icon}@2x.png" if weather_icon else "https://openweathermap.org/img/wn/01d@2x.png"
 
     # Get weather change information
