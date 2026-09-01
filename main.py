@@ -91,20 +91,17 @@ def greetings():
             weather_conditions['Clouds']['few clouds']['label'] = '02n' 
         return "Good Evening"
      
-def tips():
-    """Return practical advice based on the currently active conditions."""
-    active = {condition for condition, values in weather_conditions.items()
-              if values.get('active')}
-    
+def tips(condition):
+          
     tip_list = []
 
-    if {'Rain', 'Drizzle', 'Thunderstorm'} & active:
+    if condition in {'Rain', 'Drizzle', 'Thunderstorm'}:
         tip_list.append("Consider carrying an umbrella and wearing waterproof clothing.")
-    if 'Snow' in active:
+    if 'Snow' == condition:
         tip_list.append("Dress warmly and take care on slippery roads and sidewalks.")
-    if 'Clear' in active:
+    if 'Clear' == condition:
         tip_list.append("Wear sunscreen and stay hydrated if you will be outside.")
-    if 'Atmosphere' in active:
+    if 'Atmosphere' == condition:
         tip_list.append("Visibility may be reduced, so travel carefully.")
     if not tip_list:
         tip_list.append("Dress comfortably and don't forget to check the forecast before heading out.")
@@ -202,8 +199,13 @@ for key, value in weather_conditions.items():
                     'icon': v.get('icon', '') 
                 })
                 print(f"Active: {k} - {v.get('icon', 'N/A')}")
+                tip_list = tips(k)
+                tip_text = '<br>• '.join(tip_list)  # Format as bullet points
+                if tip_text:
+                    tip_text = '• ' + tip_text
         except (AttributeError, TypeError) as e:
             print(f"Unexpected data type for '{k}': {type(v)} - {e}")
+            alert_items = f"Unexpected data type for '{k}': {type(v)} - {e}"
             continue
 
 #----------Build alert messages----------#
@@ -227,9 +229,9 @@ if active_conditions_list:
             Feels like {feel_like}°C<br>
             Minimum Temperature: {min_temp}°C<br>
             Maximum Temperature: {max_temp}°C<br>
-            {expected_change}
+            {expected_change}            
         </div>
-        '''
+        '''        
         
     if changes:
         
@@ -258,14 +260,10 @@ if active_conditions_list:
         </div>
         """
 else:
-    alert_items = """<div class='alert-item'><strong>No active weather alerts.</strong><br><br>
-                     Either an error occurred while retrieving the data or 
-                     today's weather forcast was not included in the list</div>"""             
+    if not alert_items:
+        alert_items = """<div class='alert-item'><strong>No active weather alerts.</strong><br><br>
+                        Review Code to see if forecast was included</div>"""             
                 
-tip_list = tips()
-tip_text = '<br>• '.join(tip_list)  # Format as bullet points
-if tip_text:
-    tip_text = '• ' + tip_text
 
 #-----------Send Email-----------#
 
